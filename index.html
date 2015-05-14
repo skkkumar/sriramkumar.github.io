@@ -1,0 +1,170 @@
+<html>
+
+<head>
+
+
+<script type="text/javascript">
+
+
+
+    function initfun(){
+
+          document.onkeydown = checkKey;
+
+
+    }
+
+
+    function checkKey(e) {
+
+        e = e || window.event;
+
+        if (e.keyCode == '38') {
+            // up arrow
+        }
+        else if (e.keyCode == '40') {
+            // down arrow
+        }
+        else if (e.keyCode == '37') {
+           // left arrow
+           updateImage(-1);
+        }
+        else if (e.keyCode == '39') {
+           // right arrow
+           updateImage(1);
+        }
+
+    }
+
+
+    function updateImage(incr) {
+        var minframe = 0;
+        var wrapmax = 419;
+
+        var currentIndex = document.getElementById("frameno").value;
+        //alert('frame = ' + currentIndex);
+
+        //increment frame
+        currentIndex = parseInt(currentIndex) + incr;
+        //alert('currentIndex = ' + currentIndex);
+
+        //apply wrap around
+        if (currentIndex > wrapmax){
+            currentIndex = 1;          
+        } 
+        if(currentIndex < 1){
+            currentIndex = wrapmax;          
+        }
+        document.getElementById("frameno").value = currentIndex;
+
+        var imageIndex = minframe +  currentIndex - 1;
+
+        //update all the images
+        document.getElementById("image1").src = "left/" + imageIndex + ".jpg";
+        document.getElementById("image2").src = "disp/" + imageIndex + ".jpg";
+        document.getElementById("image3").src = "annotation_results/" + imageIndex + ".jpg";
+        document.getElementById("image4").src = "histogram_images/" + imageIndex + ".jpg";
+        document.getElementById("image5").src = "histogram_annomaly_images/" + imageIndex + ".jpg";
+
+       // document.getElementById("demo").style.color = "red";
+    }
+</script> 
+
+
+</head>
+
+
+<body onload="initfun();">
+
+<h1> Anomaly dense profile detection </h1>
+<h2> - Sriram K. Kumar </h2>
+<br>
+<br>
+<hr>
+
+Comments:
+<ul>
+<li>1. Trained with data size 3000, 12D input, using RBF (Gurls).</li>
+<li>2. Used 5 different Regression models (for mu, mv, siguu, sigvv, siguv)</li>
+<li>3. Of those 3000 data, I included 500 data as stabilization data. (Stabilization of the eye hand head motion of the icub). Below I have included a sample youtube video of the data I used.</li>
+<li>4. After including the stabilization, I found the spikes (all or most of the keypoints detected as annomaly) have reduced. </li>
+<li>5. I have included the ROC curve below.</li>
+<li>6. I had tough time doing the annotion for the real time image sequence, so I did this offline.</li>
+<li>7. I used LabelMe to do the annotation. I have included the annotation also in the results.</li>
+
+<li>8. The reason why I went with LabelMe instead of MTA tool is that the tool was expecting for a video sequence instead of image frames. I didnt know how to alter this to load the images from a folder, so that I annotate all the images.</li>
+</ul>
+<br>
+<br>
+<hr>
+
+<h3>Training Data Sample - Stabilization in random direction </h3>
+<br>
+<br>
+<iframe width="420" height="315" src="https://www.youtube.com/embed/HIFmm8Yli8U" frameborder="0" allowfullscreen></iframe>
+<br>
+<br>
+<hr>
+<h3>Testing Sample - Before adding Stabilizaion</h3>
+<br>
+<br>
+<iframe width="420" height="315" src="https://www.youtube.com/embed/1czMp5GsOAs" frameborder="0" allowfullscreen></iframe>
+<br>
+<br>
+<hr>
+<h3>Testing Sample - After adding Stabilizaion</h3>
+<br>
+<br>
+<iframe frameborder="0" width="480" height="270" src="https://www.dailymotion.com/embed/video/x2q6w7f" allowfullscreen></iframe>
+<br>
+<br>
+<hr>
+<hr>
+Results description:
+<ul>
+<li>1. Left image : original image</li>
+<li>2. Disparity image </li>
+<li>3. Annotation with all the anomaly in the image </li>
+<li>4. Histogram of the Disparity image</li>
+<li>5. Histogram of only the anomaly points masked over the Disparity image</li>
+<li>6. The ROC curve is shown below</li>
+</ul>
+<br>
+<br>
+
+
+<h3>ROC Curve</h3>
+<br>
+<img src="others/roc.jpg" alt="ROC curve" >
+<br>
+<br>
+<hr>
+
+Frame number : <input type="text" value="1" id="frameno"> <input type="button" onclick="updateImage(-1)" value="<"> <input type="button" onclick="updateImage(1)" value=">"><h4> Please use the Left and Right Arrow key on your keyboard to navigate.<h4>
+<br>
+Browse through the images with the navigation buttons. To straight away go to a specific frame, enter the frame number (1-419) and press the next button. 
+
+<hr>
+
+
+<table style="width:100%">
+  <tr>
+    <td>Left RGB image (Original)<br><img src="left/1.jpg" id="image1"></td>
+    <td>Disparity image<br><img src="disp/1.jpg" id="image2"></td> 
+    <td>Annotation and anomaly<br><img src="annotation_results/1.jpg" id="image3"></td>
+  </tr>
+  <tr>
+    <td>Histogram of depth image<br><img src="histogram_images/1.jpg" id="image4"></td>
+    <td>Histogram of depth at annomaly points<br><img src="histogram_annomaly_images/1.jpg" id="image5"></td> 
+  </tr>
+</table>
+
+
+
+
+
+
+</body>
+
+
+</html>
